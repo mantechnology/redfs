@@ -256,8 +256,11 @@
 
     #define RFS_AOP_BIT(idc) (RFS_IDC_TO_OP_ID(idc) - RFS_OP_a_start)
 
+#if 1
+    #define RFS_IS_AOP_SET(ri, idc) (test_bit(RFS_AOP_BIT(idc), ri->a_op_bitfield))
+#else
     #define RFS_IS_AOP_SET(ri, idc) (test_bit(RFS_IOP_BIT(idc), ri->a_op_bitfield))
-
+#endif
     #define RFS_SET_AOP(ri, idc, op, f) \
         do { \
             int nr = RFS_AOP_BIT(idc); \
