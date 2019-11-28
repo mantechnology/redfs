@@ -40,7 +40,7 @@
 #include <linux/aio.h>
 #include <linux/version.h>
 
-#define REDIRFS_VERSION "0.14 EXPERIMENTAL"
+#define REDIRFS_VERSION "0.14.0.1 EXPERIMENTAL"
 
 #define REDIRFS_PATH_INCLUDE        1
 #define REDIRFS_PATH_EXCLUDE        2
