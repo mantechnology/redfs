@@ -977,6 +977,11 @@ exit:
     return rv;
 }
 
+#if (LINUX_VERSION_CODE > KERNEL_VERSION(3,1,0)) 
+    // DEBUG_CENTOS_7_FILE_MOVE_LOCK
+    bool rfs_rename_start;
+#endif
+
 int rfs_fsrename(struct inode *old_dir, struct dentry *old_dentry,
         struct inode *new_dir, struct dentry *new_dentry)
 {
@@ -990,6 +995,11 @@ int rfs_fsrename(struct inode *old_dir, struct dentry *old_dentry,
         return 0;
 
     rfs_mutex_lock(&rfs_path_mutex);
+
+#if (LINUX_VERSION_CODE > KERNEL_VERSION(3,1,0)) 
+    // DEBUG_CENTOS_7_FILE_MOVE_LOCK
+    rfs_rename_start = true;
+#endif
 
     rinode = rfs_inode_find(new_dir);
     rdentry = rfs_dentry_find(old_dentry);
@@ -1013,6 +1023,12 @@ int rfs_fsrename(struct inode *old_dir, struct dentry *old_dentry,
 
     rv = rfs_fsrename_add(rroot_src, rroot_dst, old_dentry);
 exit:
+
+#if (LINUX_VERSION_CODE > KERNEL_VERSION(3,1,0)) 
+    // DEBUG_CENTOS_7_FILE_MOVE_LOCK
+    rfs_rename_start = false;
+#endif
+
     rfs_mutex_unlock(&rfs_path_mutex);
     rfs_root_put(rroot_src);
     rfs_root_put(rroot_dst);
