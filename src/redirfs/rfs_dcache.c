@@ -161,13 +161,51 @@ void rfs_dcache_entry_free_list(struct list_head *head)
 static int rfs_dcache_get_subs_mutex(struct dentry *dir, struct list_head *sibs)
 {
     int rv = 0;
+#if (LINUX_VERSION_CODE > KERNEL_VERSION(3,1,0)) 
+    // DEBUG_CENTOS_7_FILE_MOVE_LOCK   
+    extern bool rfs_rename_start;
+    bool rename_file = false;
+#endif
 
     if (!dir || !dir->d_inode)
         return 0;
 
+#if (LINUX_VERSION_CODE > KERNEL_VERSION(3,1,0)) 
+    // DEBUG_CENTOS_7_FILE_MOVE_LOCK
+
+    if(rfs_rename_start) {
+        // rename system call only
+        if (mutex_is_locked(&dir->d_inode->i_mutex)) {
+            rename_file = true;
+            //printk("rename file. ignore lock\n");
+        } else {
+            //printk("rename dir. lock now\n");
+            rfs_inode_mutex_lock(dir->d_inode);
+        }
+    } else {
+        rfs_inode_mutex_lock(dir->d_inode);
+    }
+#else
     rfs_inode_mutex_lock(dir->d_inode);
+#endif
+   
     rv = rfs_dcache_get_subs(dir, sibs, NULL);
+
+#if (LINUX_VERSION_CODE > KERNEL_VERSION(3,1,0)) 
+    // DEBUG_CENTOS_7_FILE_MOVE_LOCK
+    if(rfs_rename_start) {
+        if(!rename_file) {
+            //printk("unlock dir\n");
+            rfs_inode_mutex_unlock(dir->d_inode);
+        } else {
+            // unlock will be upper-layer
+        }
+    } else {
+        rfs_inode_mutex_unlock(dir->d_inode);
+    }
+#else
     rfs_inode_mutex_unlock(dir->d_inode);
+#endif
 
     return rv;
 }
