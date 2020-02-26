@@ -182,8 +182,13 @@ int redirfs_unregister_filter(redirfs_filter filter)
      *    - handler returned to filter after registration
      */
     if (atomic_read(&rflt->count) != 3) {
+#if 0 // workaround
         spin_unlock(&rflt->lock);
         return -EBUSY;
+#else
+        printk("redirfs_unregister_filter: flt->count=%d. ignore EBUSY return\n", atomic_read(&rflt->count));    
+        atomic_dec(&rflt->count);
+#endif
     }
 
     rfs_flt_put(rflt);
