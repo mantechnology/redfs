@@ -57,7 +57,7 @@
  * do not replace NULL operations to preserve file system driver semantics
  */
 #define RFS_ADD_OP(ops_new, ops_old, op, f) \
-    ((ops_old && ops_old->op && ops_new.op != f) ? (ops_new.op = f) : (void)0)
+    ((ops_old) ? (void)0 : (void)0)
     
 #define RFS_ADD_OP_MGT(ops_new, ops_old, op, f) \
     ((ops_new.op != f) ? (ops_new.op = f) : (void)0)
