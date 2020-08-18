@@ -1222,6 +1222,17 @@ int rfs_clone_file_range(struct file *src_file, loff_t src_off,
     rargs.rv.rv_int = -EIO;
     if (!RFS_IS_FOP_SET(rfile, rargs.type.id) ||
         !rfs_precall_flts(rinfo->rchain, &rcont, &rargs)) {
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(4,18,0)) 
+        if (rfile->op_old && rfile->op_old->clone_file_range) 
+            rargs.rv.rv_int = rfile->op_old->clone_file_range(
+                    rargs.args.f_clone_file_range.src_file,
+                    rargs.args.f_clone_file_range.src_off,
+                    rargs.args.f_clone_file_range.dst_file,
+                    rargs.args.f_clone_file_range.dst_off,
+                    rargs.args.f_clone_file_range.count);
+#else
+        printk("// TODO: CENTOS8 check rfs_clone_file_range\n");
+#endif
     }
 
     if (RFS_IS_FOP_SET(rfile, rargs.type.id))
@@ -1264,6 +1275,17 @@ ssize_t rfs_dedupe_file_range(struct file *src_file, u64 loff,
 
     if (!RFS_IS_FOP_SET(rfile, rargs.type.id) ||
         !rfs_precall_flts(rinfo->rchain, &rcont, &rargs)) {
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(4,18,0)) 
+        if (rfile->op_old && rfile->op_old->dedupe_file_range) 
+            rargs.rv.rv_ssize = rfile->op_old->dedupe_file_range(
+                    rargs.args.f_dedupe_file_range.src_file,
+                    rargs.args.f_dedupe_file_range.loff,
+                    rargs.args.f_dedupe_file_range.len,
+                    rargs.args.f_dedupe_file_range.dst_file,
+                    rargs.args.f_dedupe_file_range.dst_loff);
+#else
+        printk("// TODO: CENTOS8 check rfs_dedupe_file_range\n");
+#endif
     }
 
     if (RFS_IS_FOP_SET(rfile, rargs.type.id))

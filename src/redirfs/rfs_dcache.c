@@ -175,6 +175,7 @@ static int rfs_dcache_get_subs_mutex(struct dentry *dir, struct list_head *sibs)
 
     if(rfs_rename_start) {
         // rename system call only
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(4,0,0)) 
         if (mutex_is_locked(&dir->d_inode->i_mutex)) {
             rename_file = true;
             //printk("rename file. ignore lock\n");
@@ -182,6 +183,16 @@ static int rfs_dcache_get_subs_mutex(struct dentry *dir, struct list_head *sibs)
             //printk("rename dir. lock now\n");
             rfs_inode_mutex_lock(dir->d_inode);
         }
+#else
+        if (inode_is_locked(dir->d_inode)) {
+            rename_file = true;
+            //printk("rename file. ignore lock\n");
+        } else {
+            //printk("rename dir. lock now\n");
+            rfs_inode_mutex_lock(dir->d_inode);
+        }
+#endif
+
     } else {
         rfs_inode_mutex_lock(dir->d_inode);
     }
