@@ -18,9 +18,8 @@ KDIR ?= /lib/modules/`uname -r`/build
 
 MINC := -I$(PWD)/redirfs
 
-#IGN_WARN := Wno-implicit-function-declaration
-
 modules:
+#	$(MAKE) -C $(KDIR) M=$(PWD) EXTRA_CFLAGS=$(MINC) modules
 	$(MAKE) -C $(KDIR) M=$(PWD) EXTRA_CFLAGS='$(MINC) $(IGN_WARN) $(DEF)' modules
 
 modules_debug:

@@ -70,7 +70,11 @@ static struct rfs_object_table rfs_file_table = {
 #else /* RFS_USE_HASHTABLE */
 
 struct rfs_radix_tree   rfs_file_radix_tree = {
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(4,0,0)) 
+    .root = RADIX_TREE_INIT(GFP_ATOMIC),
+#else
     .root = RADIX_TREE_INIT(name, GFP_ATOMIC),
+#endif
     .lock = __SPIN_LOCK_INITIALIZER(rfs_file_radix_tree.lock),
     .rfs_type = RFS_TYPE_RFILE,
     };

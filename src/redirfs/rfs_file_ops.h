@@ -60,9 +60,16 @@
     #define FUNCTION_FOP_show_fdinfo
 #endif
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4,5,0))
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(4,18,0)) 
     #define FUNCTION_FOP_copy_file_range PROTOTYPE_FOP(copy_file_range, rfs_copy_file_range)
     #define FUNCTION_FOP_clone_file_range PROTOTYPE_FOP(clone_file_range, rfs_clone_file_range)
     #define FUNCTION_FOP_dedupe_file_range PROTOTYPE_FOP(dedupe_file_range, rfs_dedupe_file_range)
+#else // TODO: CENTOS89 check!!! XXX
+    #define FUNCTION_FOP_copy_file_range 
+    #define FUNCTION_FOP_clone_file_range 
+    #define FUNCTION_FOP_dedupe_file_range 
+#endif
+
 #else
     #define FUNCTION_FOP_copy_file_range
     #define FUNCTION_FOP_clone_file_range

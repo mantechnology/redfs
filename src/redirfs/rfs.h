@@ -56,9 +56,16 @@
 /*
  * do not replace NULL operations to preserve file system driver semantics
  */
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(4,0,0)) 
 #define RFS_ADD_OP(ops_new, ops_old, op, f) \
-    ((ops_old) ? (void)0 : (void)0)
-    
+    ((ops_old && ops_old->op && ops_new.op != f) ? (ops_new.op = f) : (void)0)
+#else
+// TODO: CENTOS8 check 
+//((ops_old) ? (void)0 : (void)0)
+#define RFS_ADD_OP(ops_new, ops_old, op, f) \
+    ((ops_old && ops_old->op && ops_new.op != f) ? (ops_new.op = f) : (void)0)
+#endif
+
 #define RFS_ADD_OP_MGT(ops_new, ops_old, op, f) \
     ((ops_new.op != f) ? (ops_new.op = f) : (void)0)
 
