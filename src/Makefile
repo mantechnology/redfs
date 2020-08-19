@@ -19,7 +19,8 @@ KDIR ?= /lib/modules/`uname -r`/build
 MINC := -I$(PWD)/redirfs
 
 modules:
-	$(MAKE) -C $(KDIR) M=$(PWD) EXTRA_CFLAGS=$(MINC) modules
+#	$(MAKE) -C $(KDIR) M=$(PWD) EXTRA_CFLAGS=$(MINC) modules
+	$(MAKE) -C $(KDIR) M=$(PWD) EXTRA_CFLAGS='$(MINC) $(IGN_WARN) $(DEF)' modules
 
 modules_debug:
 	$(MAKE) -C $(KDIR) M=$(PWD) EXTRA_CFLAGS='$(MINC) -v -O1 -g -DRFS_DBG -DDEBUG' modules

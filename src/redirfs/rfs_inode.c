@@ -41,7 +41,11 @@
 /*---------------------------------------------------------------------------*/
 
 struct rfs_radix_tree   rfs_inode_radix_tree = {
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(4,0,0)) 
     .root = RADIX_TREE_INIT(GFP_ATOMIC),
+#else
+    .root = RADIX_TREE_INIT(0, GFP_ATOMIC),
+#endif
     .lock = __SPIN_LOCK_INITIALIZER(rfs_inode_radix_tree.lock),
     .rfs_type = RFS_TYPE_RINODE,
     };

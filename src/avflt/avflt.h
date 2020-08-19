@@ -36,6 +36,9 @@
 #include <linux/fs_struct.h>
 #include <linux/fs.h>
 #include <linux/slab.h>
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)) 
+#include <linux/cred.h>
+#endif
 #include <redirfs.h>
 
 #define AVFLT_VERSION    "0.7"
